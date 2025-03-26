@@ -5,50 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Unit Circle</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: white;
+            background-color: black;
+            margin: 0;
         }
         canvas {
-            background-color: white;
+            background-color: black;
             cursor: grab;
-            max-width: 90vw; /* Responsive for smaller screens */
-            max-height: 90vh;
-        }
-        footer {
-            margin-top: 10px;
-            font-size: 18px;
-            color: black;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <canvas id="unitCircle" width="500" height="500"></canvas>
-    <footer>JONATAS DEV</footer>
 
     <script>
         const canvas = document.getElementById("unitCircle");
         const ctx = canvas.getContext("2d");
 
-        function resizeCanvas() {
-            canvas.width = Math.min(window.innerWidth * 0.9, 500);
-            canvas.height = Math.min(window.innerHeight * 0.7, 500);
-            drawCircle();
-        }
-
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
-        const radius = canvas.width / 3;
+        const radius = 150;
 
         let angle = Math.PI / 4; // Initial angle
         let isDragging = false;
@@ -57,7 +37,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Draw the unit circle
-            ctx.strokeStyle = "black";
+            ctx.strokeStyle = "white";
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -76,7 +56,7 @@
             const y = centerY - radius * Math.sin(angle);
 
             // Draw triangle lines
-            ctx.strokeStyle = "black";
+            ctx.strokeStyle = "white";
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(x, y);
@@ -103,16 +83,20 @@
             ctx.fill();
 
             // Display center (0,0)
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "yellow";
             ctx.font = "16px Arial";
             ctx.fillText("(0, 0)", centerX - 20, centerY + 20);
 
             // Display cosine and sine values
             let cosVal = Math.cos(angle).toFixed(2);
             let sinVal = Math.sin(angle).toFixed(2);
+            let hypotenuse = 1; // Always 1 in unit circle
 
+            ctx.fillStyle = "white";
+            ctx.font = "16px Arial";
             ctx.fillText(`cos(θ) = ${cosVal}`, centerX + 10, y - 10);
             ctx.fillText(`sin(θ) = ${sinVal}`, x + 10, centerY - 10);
+            ctx.fillText(`Hypotenuse = ${hypotenuse}`, centerX - 60, centerY - radius - 10);
         }
 
         function updateAngle(event) {
@@ -139,8 +123,7 @@
             if (isDragging) updateAngle(event);
         });
 
-        window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
+        drawCircle();
     </script>
 </body>
 </html>
