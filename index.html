@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Unit Circle</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            margin: 0;
+        }
+        canvas {
+            background-color: black;
+            cursor: grab;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="unitCircle" width="500" height="500"></canvas>
+
+    <script>
+        const canvas = document.getElementById("unitCircle");
+        const ctx = canvas.getContext("2d");
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = 150;
+
+        let angle = Math.PI / 4; // Initial angle
+        let isDragging = false;
+
+        function drawCircle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the unit circle
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Draw axes
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, canvas.height);
+            ctx.stroke();
+
+            // Calculate point on the circle
+            const x = centerX + radius * Math.cos(angle);
+            const y = centerY - radius * Math.sin(angle);
+
+            // Draw triangle lines
+            ctx.strokeStyle = "white";
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            // Cosine line
+            ctx.strokeStyle = "red";
+            ctx.beginPath();
+            ctx.moveTo(centerX, y);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            // Sine line
+            ctx.strokeStyle = "blue";
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, centerY);
+            ctx.stroke();
+
+            // Draw point on circle
+            ctx.fillStyle = "purple";
+            ctx.beginPath();
+            ctx.arc(x, y, 8, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Display center (0,0)
+            ctx.fillStyle = "yellow";
+            ctx.font = "16px Arial";
+            ctx.fillText("(0, 0)", centerX - 20, centerY + 20);
+
+            // Display cosine and sine values
+            let cosVal = Math.cos(angle).toFixed(2);
+            let sinVal = Math.sin(angle).toFixed(2);
+            let hypotenuse = 1; // Always 1 in unit circle
+
+            ctx.fillStyle = "white";
+            ctx.font = "16px Arial";
+            ctx.fillText(`cos(θ) = ${cosVal}`, centerX + 10, y - 10);
+            ctx.fillText(`sin(θ) = ${sinVal}`, x + 10, centerY - 10);
+            ctx.fillText(`Hypotenuse = ${hypotenuse}`, centerX - 60, centerY - radius - 10);
+        }
+
+        function updateAngle(event) {
+            let clientX = event.clientX || event.touches[0].clientX;
+            let clientY = event.clientY || event.touches[0].clientY;
+
+            let dx = clientX - centerX;
+            let dy = centerY - clientY;
+
+            angle = Math.atan2(dy, dx);
+            drawCircle();
+        }
+
+        canvas.addEventListener("mousedown", () => isDragging = true);
+        canvas.addEventListener("mouseup", () => isDragging = false);
+        canvas.addEventListener("mouseleave", () => isDragging = false);
+        canvas.addEventListener("mousemove", (event) => {
+            if (isDragging) updateAngle(event);
+        });
+
+        canvas.addEventListener("touchstart", () => isDragging = true);
+        canvas.addEventListener("touchend", () => isDragging = false);
+        canvas.addEventListener("touchmove", (event) => {
+            if (isDragging) updateAngle(event);
+        });
+
+        drawCircle();
+    </script>
+</body>
+</html>
